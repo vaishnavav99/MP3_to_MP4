@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="title">
+  Welcome, {{name}}
+</h1>
+<form method="post" action="/profile" enctype="multipart/form-data">
+  <input type="file" name="input" accept=".mp3">
+  <button type="submit">convert</button>
+</form>
+{% endblock %}
