@@ -5,6 +5,8 @@ import secrets
 from . import db
 import os, sys
 from moviepy.editor import *
+from .models import Post
+from . import db
 
 main = Blueprint('main', __name__,static_folder='static',template_folder='templates')
 
@@ -35,4 +37,10 @@ def profile_post():
     outfile = "./file/"+z
 
     video.write_videofile(outfile, fps=1)
+    # create a new user with the form data. Hash the password so the plaintext version isn't saved.
+    new_post = Post(author=current_user,video_file= outfile)
+
+    # add the new user to the database
+    db.session.add(new_post)
+    db.session.commit()
     return outfile
