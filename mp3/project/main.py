@@ -5,7 +5,7 @@ import secrets
 from . import db
 import os, sys
 from moviepy.editor import *
-from .models import Post
+from .models import Post,User
 from . import db
 
 main = Blueprint('main', __name__,static_folder='static',template_folder='templates')
@@ -13,7 +13,15 @@ main = Blueprint('main', __name__,static_folder='static',template_folder='templa
 
 @main.route('/')
 def index():
+    #user = User.query.filter_by(name=current_user.name).first_or_404()
+    #posts = Post.query.filter_by(author=user)
     return render_template('index.html')
+    
+
+@main.route('/video')
+@login_required
+def video():
+    return render_template('video.html', name=current_user.name)
     
 
 @main.route('/profile')
@@ -21,12 +29,13 @@ def index():
 def profile():
     return render_template('profile.html', name=current_user.name)
     
+
 @main.route('/profile',methods=['POST'])
 def profile_post():
     file=request.files['input']
     x= secrets.token_hex(20)
     y=x+'.mp3'
-    filePath = "./file/"+secure_filename(y)
+    filePath = "./static/file/"+secure_filename(y)
     file.save(filePath)
         
     audio = AudioFileClip(filePath)
@@ -34,13 +43,18 @@ def profile_post():
 
     video = image.set_audio(audio)
     z=x+'.mp4'
-    outfile = "./file/"+z
+    outfile = "file/"+z
 
-    video.write_videofile(outfile, fps=1)
+    video.write_videofile('./static/'+outfile, fps=1)
     # create a new user with the form data. Hash the password so the plaintext version isn't saved.
     new_post = Post(author=current_user,video_file= outfile)
 
     # add the new user to the database
     db.session.add(new_post)
     db.session.commit()
-    return outfile
+    
+    
+    return render_template('profile.html', o=outfile, name=current_user.name)
+    
+
+
