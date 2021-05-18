@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template,request
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
+import os, sys
+from moviepy.editor import *
 import secrets
 from . import db
 
@@ -23,4 +25,9 @@ def profile_post():
     x= secrets.token_hex(20)+'.mp3'
     filePath = "./file/"+secure_filename(x)
     file.save(filePath)
-    return "Success"
+    audio = AudioFileClip(filePath)
+    image = VideoFileClip('./file/2.mp4').set_duration(audio.duration) 
+    video = image.set_audio(audio)
+    outfile = f"{os.path.splitext('1')}_with_image.mp4" # 1.
+    video.write_videofile(outfile, fps=1)
+    return outfile
