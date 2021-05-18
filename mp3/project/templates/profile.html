@@ -6,11 +6,12 @@
 </h1>
 <form method="post" action="/profile" enctype="multipart/form-data">
   <input type="file" name="input" accept=".mp3">
-  <button type="submit">convert</button>
+  <button type="submit" class="button is-danger">convert</button>
 </form>
 {%if o %}
 <video width="320" height="240" controls style="margin-top: 10vh;">
-  <source src="{{url_for('static',filename=o)}}" type="video/mp4">
-</video>
+  <source src="{{url_for('static',filename='file/'+o)}}" type="video/mp4">
+</video><br>
+<a href="{{url_for('main.down',paths=o)}}" target="blank"><button class="button is-danger">Download</button></a>
 {%endif%}
 {% endblock %}

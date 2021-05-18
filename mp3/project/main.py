@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template,request
+from flask import Blueprint, render_template,request,send_file
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 import secrets
@@ -43,18 +43,21 @@ def profile_post():
 
     video = image.set_audio(audio)
     z=x+'.mp4'
-    outfile = "file/"+z
+    
 
-    video.write_videofile('./static/'+outfile, fps=1)
+    video.write_videofile('./static/file/'+z, fps=1)
     # create a new user with the form data. Hash the password so the plaintext version isn't saved.
-    new_post = Post(author=current_user,video_file= outfile)
+    new_post = Post(author=current_user,video_file= z)
 
     # add the new user to the database
     db.session.add(new_post)
     db.session.commit()
     
     
-    return render_template('profile.html', o=outfile, name=current_user.name)
+    return render_template('profile.html', o=z, name=current_user.name)
     
-
+@main.route('/down/<paths>')
+def down(paths):
+    o='static/file/'+str(paths)
+    return send_file(o,as_attachment=True)
 
