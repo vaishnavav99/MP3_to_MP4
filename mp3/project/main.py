@@ -33,17 +33,17 @@ def profile_post():
     file=request.files['input']
     x= secrets.token_hex(20)
     y=x+'.mp3'
-    filePath = "./static/file/"+secure_filename(y)
+    filePath = "./project/static/file/"+secure_filename(y)
     file.save(filePath)
         
     audio = AudioFileClip(filePath)
-    image = VideoFileClip('./2.mp4').set_duration(audio.duration) 
+    image = VideoFileClip('./project/2.mp4').set_duration(audio.duration) 
 
     video = image.set_audio(audio)
     z=x+'.mp4'
     
 
-    video.write_videofile('./static/file/'+z, fps=1)
+    video.write_videofile('./project/static/file/'+z)
     # create a new user with the form data. Hash the password so the plaintext version isn't saved.
     new_post = Post(author=current_user,video_file= z)
 
